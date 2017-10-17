@@ -1,6 +1,6 @@
 'use strict';
 
-const http = require('http');
+const https = require('https');
 
 var express = require('express');
 var app = express();
@@ -23,9 +23,9 @@ app.use(function (req, res, next) {
 
 // your express configuration here
 
-var httpServer = http.createServer(app);
+var httpServer = https.createServer(app);
 
-httpServer.listen(8080);
+httpServer.listen(process.env.PORT || 443);
 
 app.use(express.static('..'));
 app.set('view engine', 'ejs');
