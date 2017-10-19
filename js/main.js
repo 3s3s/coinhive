@@ -45,23 +45,15 @@ function ShowMiningInfo()
 
 $(function()
 {
-    window.addEventListener("message", receiveMessage, false);
-    
-    CancelMining();
-    
     modals.OKCancel('<span>Подтвердите, что хотите майнить</span>', '<span>Сейчас начнется майнинг, если вы не против, то жмите "Confirm"</span>', (ret) =>{
         if (ret == 'ok')
-            AllowMining();
+            miner.start();
         else
-            CancelMining();
+            miner.stop();
     });
     
     ShowMiningInfo();
     
-	//CancelMining();
-	//AllowMining();
-	//window.postMessage('start', '*');
-
 	// Update stats once per second
 	const intervalID = setInterval(function() {
 		var hashesPerSecond = miner.getHashesPerSecond();
@@ -70,41 +62,8 @@ $(function()
 		if (hashesPerSecond < 10)
 		{
 		    clearInterval(intervalID);
-		    CancelMining();
+		    miner.stop();
 		}
 	}, 10000);
 });
-
-function receiveMessage(event)
-{
-    if (event.data !== "start")
-        return;
-
-    miner.start();
-}
-function AllowMining()
-{
-	$.getJSON( "https://coinhive.multicoins.org/auth?key="+encodeURIComponent(SITE_KEY), function( ret ) {
-	    if (ret && ret.data)
-	    {
-    		window.postMessage({type: 'coinhive-auth-success', params: {
-    			token: JSON.parse(ret.data).token
-    		}}, "*");
-    		
-            window.postMessage('start', '*');
-	    }
-	})
-      .fail(function() {
-        console.log( "error" );
-      });
-    
-}
-
-function CancelMining()
-{
-    miner.stop();
-    window.postMessage({type: 'coinhive-auth-canceled'}, "*");
-    window.postMessage({type: 'coinhive-auth-success', params: {token: ""}}, "*");
-}
-
 
